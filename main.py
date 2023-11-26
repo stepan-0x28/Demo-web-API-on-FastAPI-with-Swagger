@@ -14,7 +14,7 @@ app = FastAPI()
 
 @app.get('/', response_model=schemas.HelloWorld)
 async def root():
-    return {'message': 'Hello World'}
+    return schemas.HelloWorld()
 
 
 @app.get('/users', response_model=List[schemas.User])
