@@ -1,2 +1,2 @@
-# Demo web API with Swagger
-Demonstration of working with FastAPI and SQLAlchemy (asynchronously), as well as with Pydantic and other libraries
+# Demo web API on FastAPI with Swagger
+My first demo with FastAPI (with Swagger) and SQLAlchemy (asynchronously), as well as Pydantic and other libraries
