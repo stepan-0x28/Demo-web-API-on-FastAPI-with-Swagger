@@ -1,11 +1,14 @@
 from pydantic import BaseModel
 
 
-class HelloWorld(BaseModel):
-    message: str = 'Hello World'
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 
-class User(BaseModel):
+class Order(BaseModel):
     id: int
-    login: str
-    password: str
+    customer_id: int
+    executor_id: int
+    name: str
+    description: str

@@ -2,24 +2,35 @@ import uvicorn
 
 import schemas
 import services
+import dependencies
+import exceptions
+import models
 
 from fastapi import FastAPI, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List, Annotated
-
-from database import get_database_session
+from fastapi.security import OAuth2PasswordRequestForm
+from typing import Annotated, List
 
 app = FastAPI()
 
 
-@app.get('/', response_model=schemas.HelloWorld)
-async def root():
-    return schemas.HelloWorld()
+@app.post("/token", response_model=schemas.Token)
+async def create_token(data_service: Annotated[services.Data, Depends(dependencies.get_data_service)],
+                       form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+                       token_service: Annotated[services.Token, Depends(dependencies.get_token_service)]):
+    user = await data_service.get_user(form_data.username, form_data.password)
+
+    if not user:
+        raise exceptions.HTTPUnauthorizedException()
+
+    token = token_service.create({'username': user.username, 'password': user.password})
+
+    return schemas.Token(access_token=token, token_type='bearer')
 
 
-@app.get('/users', response_model=List[schemas.User])
-async def users(database_session: Annotated[AsyncSession, Depends(get_database_session)]):
-    return await services.get_users(database_session)
+@app.get('/orders', response_model=List[schemas.Order])
+async def read_orders(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
+                      data_service: Annotated[services.Data, Depends(dependencies.get_data_service)]):
+    return await data_service.get_user_orders(current_user)
 
 
 if __name__ == '__main__':

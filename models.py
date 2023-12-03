@@ -1,15 +1,41 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Integer, String, Column, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Integer, String, ForeignKey
 
 Base = declarative_base()
 
 
-# noinspection SpellCheckingInspection
+class Role(Base):
+    # noinspection SpellCheckingInspection
+    __tablename__ = 'roles'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    key: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[str] = mapped_column(String, nullable=False)
+
+
 class User(Base):
+    # noinspection SpellCheckingInspection
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True)
-    login = Column(String, nullable=False)
-    password = Column(String, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    username: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String, nullable=False)
+    role_id: Mapped[int] = mapped_column(Integer, ForeignKey('roles.id'))
 
-    __table_args__ = (UniqueConstraint('login', name='users_un'),)
+    role = relationship(Role)
+
+
+class Order(Base):
+    # noinspection SpellCheckingInspection
+    __tablename__ = 'orders'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    customer_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
+    executor_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[str] = mapped_column(String)
+
+    customer = relationship(User, foreign_keys=[customer_id])
+    executor = relationship(User, foreign_keys=[executor_id])
