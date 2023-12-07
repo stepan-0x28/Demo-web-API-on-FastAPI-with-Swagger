@@ -6,6 +6,14 @@ class Token(BaseModel):
     token_type: str
 
 
+class User(BaseModel):
+    id: int
+    username: str
+    role_id: int
+    first_name: str
+    last_name: str
+
+
 class Order(BaseModel):
     id: int
     customer_id: int

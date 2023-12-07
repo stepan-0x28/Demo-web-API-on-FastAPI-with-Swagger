@@ -13,9 +13,9 @@ from typing import Annotated, List
 app = FastAPI()
 
 
-@app.post("/token", response_model=schemas.Token)
-async def create_token(data_service: Annotated[services.Data, Depends(dependencies.get_data_service)],
-                       form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+@app.post('/token', response_model=schemas.Token)
+async def create_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+                       data_service: Annotated[services.Data, Depends(dependencies.get_data_service)],
                        token_service: Annotated[services.Token, Depends(dependencies.get_token_service)]):
     user = await data_service.get_user(form_data.username, form_data.password)
 
@@ -25,6 +25,11 @@ async def create_token(data_service: Annotated[services.Data, Depends(dependenci
     token = token_service.create({'username': user.username, 'password': user.password})
 
     return schemas.Token(access_token=token, token_type='bearer')
+
+
+@app.get('/user', response_model=schemas.User)
+async def read_user(current_user: Annotated[models.User, Depends(dependencies.get_current_user)]):
+    return current_user
 
 
 @app.get('/orders', response_model=List[schemas.Order])
