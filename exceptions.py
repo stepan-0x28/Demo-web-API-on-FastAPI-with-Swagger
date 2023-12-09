@@ -6,3 +6,8 @@ class HTTPUnauthorizedException(HTTPException):
         super(HTTPUnauthorizedException, self).__init__(status.HTTP_401_UNAUTHORIZED,
                                                         'Incorrect username or password',
                                                         {'WWW-Authenticate': 'Bearer'})
+
+
+class HTTPForbiddenException(HTTPException):
+    def __init__(self):
+        super(HTTPForbiddenException, self).__init__(status.HTTP_403_FORBIDDEN, 'Incorrect password')

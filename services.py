@@ -4,7 +4,7 @@ import models
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, Sequence, Dict
-from sqlalchemy import select
+from sqlalchemy import select, update
 from jose import jwt
 
 
@@ -29,6 +29,13 @@ class Data:
         result = await self.__async_session.execute(statement)
 
         return result.scalars().all()
+
+    async def change_password(self, user: models.User, new_password: str):
+        statement = update(models.User).where(models.User.id == user.id).values({models.User.password: new_password})
+
+        await self.__async_session.execute(statement)
+
+        await self.__async_session.commit()
 
 
 class Token:

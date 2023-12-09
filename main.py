@@ -32,6 +32,18 @@ async def read_user(current_user: Annotated[models.User, Depends(dependencies.ge
     return current_user
 
 
+@app.put('/password', response_model=schemas.Response)
+async def update_password(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
+                          password_update_data: schemas.PasswordUpdateData,
+                          data_service: Annotated[services.Data, Depends(dependencies.get_data_service)]):
+    if current_user.password != password_update_data.current_password:
+        raise exceptions.HTTPForbiddenException()
+
+    await data_service.change_password(current_user, password_update_data.new_password)
+
+    return schemas.Response(message='Password updated')
+
+
 @app.get('/orders', response_model=List[schemas.Order])
 async def read_orders(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                       data_service: Annotated[services.Data, Depends(dependencies.get_data_service)]):
