@@ -14,11 +14,6 @@ class User(BaseModel):
     last_name: str
 
 
-class PasswordUpdateData(BaseModel):
-    current_password: str
-    new_password: str
-
-
 class Response(BaseModel):
     message: str
 

@@ -6,7 +6,7 @@ import dependencies
 import exceptions
 import models
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Form
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated, List
 
@@ -32,16 +32,37 @@ async def read_user(current_user: Annotated[models.User, Depends(dependencies.ge
     return current_user
 
 
-@app.put('/password', response_model=schemas.Response)
-async def update_password(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
-                          password_update_data: schemas.PasswordUpdateData,
+@app.put('/user/password', response_model=schemas.Response)
+async def update_password(current_password: Annotated[str, Form()],
+                          new_password: Annotated[str, Form()],
+                          current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                           data_service: Annotated[services.Data, Depends(dependencies.get_data_service)]):
-    if current_user.password != password_update_data.current_password:
-        raise exceptions.HTTPForbiddenException()
+    if current_password == new_password:
+        return schemas.Response(message='The current password and the new password are the same')
 
-    await data_service.change_password(current_user, password_update_data.new_password)
+    if current_user.password != current_password:
+        return schemas.Response(message='Current password is incorrect')
+
+    await data_service.change_password(current_user, new_password)
 
     return schemas.Response(message='Password updated')
+
+
+@app.put('/user/username', response_model=schemas.Response)
+async def update_username(new_username: Annotated[str, Form()],
+                          current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
+                          lock_service: Annotated[services.Lock, Depends(dependencies.get_lock_service)],
+                          data_service: Annotated[services.Data, Depends(dependencies.get_data_service)]):
+    if new_username == current_user.username:
+        return schemas.Response(message='The new username and the current one are the same')
+
+    async with await lock_service.get_lock(f'{models.User.__tablename__}_table'):
+        if await data_service.get_user_existence_status(new_username):
+            return schemas.Response(message='This username is already taken')
+
+        await data_service.change_username(current_user, new_username)
+
+    return schemas.Response(message='Username updated')
 
 
 @app.get('/orders', response_model=List[schemas.Order])

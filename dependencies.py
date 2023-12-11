@@ -8,6 +8,8 @@ from typing import AsyncGenerator, Annotated
 
 from database import AsyncSession
 
+_lock_service = services.Lock()
+
 
 def get_token_service() -> services.Token:
     return security.token_service
@@ -29,3 +31,7 @@ async def get_current_user(token: Annotated[str, Depends(security.oauth2_scheme)
         raise exceptions.HTTPUnauthorizedException()
 
     return user
+
+
+def get_lock_service() -> services.Lock:
+    return _lock_service
