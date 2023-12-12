@@ -3,7 +3,7 @@ import models
 from typing import Sequence
 from sqlalchemy import select
 
-from services.data_sub_services.base import Base
+from services.data_subservices.base import Base
 
 
 class Orders(Base):

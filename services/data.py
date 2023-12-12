@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services.data_sub_services.user import User
-from services.data_sub_services.orders import Orders
+from services.data_subservices.user import User
+from services.data_subservices.orders import Orders
 
 
 class Data:

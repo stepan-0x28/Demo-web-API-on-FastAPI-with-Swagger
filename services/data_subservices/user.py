@@ -3,7 +3,7 @@ import models
 from typing import Optional
 from sqlalchemy import select, update, func
 
-from services.data_sub_services.base import Base
+from services.data_subservices.base import Base
 
 
 class User(Base):
