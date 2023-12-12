@@ -30,7 +30,7 @@ class User(Base):
 
         result = await self._async_session.execute(statement)
 
-        return result.scalar()
+        return bool(result.scalar())
 
     async def change_username(self, user: models.User, new_username: str):
         statement = update(models.User).where(models.User.id == user.id).values({models.User.username: new_username})
