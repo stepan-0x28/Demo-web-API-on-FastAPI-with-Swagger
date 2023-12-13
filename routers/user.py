@@ -11,7 +11,7 @@ from services.lock import Lock as LockService
 router = APIRouter(prefix='/user', tags=['user'])
 
 
-@router.post('')
+@router.post('', response_model=schemas.Response)
 async def create_user(lock_service: Annotated[LockService, Depends(dependencies.get_lock_service)],
                       new_user_details: Annotated[schemas.UserIn, Depends()],
                       data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
@@ -31,6 +31,15 @@ async def create_user(lock_service: Annotated[LockService, Depends(dependencies.
 @router.get('', response_model=schemas.UserOut)
 async def read_user(current_user: Annotated[models.User, Depends(dependencies.get_current_user)]):
     return current_user
+
+
+@router.put('', response_model=schemas.Response)
+async def update_user(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
+                      new_user_data: Annotated[schemas.UserData, Depends()],
+                      data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
+    await data_service.users.change_data(current_user.id, new_user_data)
+
+    return schemas.Response(message='Data updated')
 
 
 @router.put('/password', response_model=schemas.Response)

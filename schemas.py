@@ -6,10 +6,13 @@ class Token(BaseModel):
     token_type: str = 'bearer'
 
 
-class BaseUser(BaseModel):
-    username: str
+class UserData(BaseModel):
     first_name: str
     last_name: str
+
+
+class BaseUser(UserData):
+    username: str
 
 
 class UserIn(BaseUser):

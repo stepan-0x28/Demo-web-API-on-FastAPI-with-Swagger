@@ -1,4 +1,5 @@
 import models
+import schemas
 
 from typing import Optional
 from sqlalchemy import select, update, func
@@ -22,6 +23,13 @@ class Users(Base):
         result = await self._async_session.execute(statement)
 
         return result.scalar()
+
+    async def change_data(self, user_id: int, user_data: schemas.UserData):
+        statement = update(models.User).where(models.User.id == user_id).values(user_data)
+
+        await self._async_session.execute(statement)
+
+        await self._async_session.commit()
 
     async def change_password(self, user: models.User, new_password: str):
         statement = update(models.User).where(models.User.id == user.id).values({models.User.password: new_password})
