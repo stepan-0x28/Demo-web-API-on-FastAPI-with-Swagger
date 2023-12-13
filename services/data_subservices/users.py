@@ -24,8 +24,8 @@ class Users(Base):
 
         return result.scalar()
 
-    async def change_data(self, user_id: int, user_data: schemas.UserData):
-        statement = update(models.User).where(models.User.id == user_id).values(user_data)
+    async def change_data(self, user_id: int, new_user_data: schemas.UserData):
+        statement = update(models.User).where(models.User.id == user_id).values(new_user_data)
 
         await self._async_session.execute(statement)
 
