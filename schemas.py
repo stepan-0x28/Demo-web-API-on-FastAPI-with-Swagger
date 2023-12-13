@@ -6,12 +6,19 @@ class Token(BaseModel):
     token_type: str = 'bearer'
 
 
-class User(BaseModel):
-    id: int
+class BaseUser(BaseModel):
     username: str
-    role_id: int
     first_name: str
     last_name: str
+
+
+class UserIn(BaseUser):
+    password: str
+
+
+class UserOut(BaseUser):
+    id: int
+    role_id: int
 
 
 class Response(BaseModel):

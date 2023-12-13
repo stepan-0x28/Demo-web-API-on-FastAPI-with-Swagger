@@ -6,8 +6,13 @@ from sqlalchemy import select, update, func
 from services.data_subservices.base import Base
 
 
-class User(Base):
-    async def get(self, username: str, password: str) -> Optional[models.User]:
+class Users(Base):
+    async def create(self, new_user: models.User):
+        self._async_session.add(new_user)
+
+        await self._async_session.commit()
+
+    async def get_one(self, username: str, password: str) -> Optional[models.User]:
         statement = select(models.User).join(models.Role).where(
             models.User.username == username).where(
             models.User.password == password).where(

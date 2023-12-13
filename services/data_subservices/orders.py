@@ -7,7 +7,7 @@ from services.data_subservices.base import Base
 
 
 class Orders(Base):
-    async def get(self, user: models.User) -> Sequence[models.Order]:
+    async def get_few(self, user: models.User) -> Sequence[models.Order]:
         statement = select(models.Order).where(models.Order.customer_id == user.id)
 
         result = await self._async_session.execute(statement)

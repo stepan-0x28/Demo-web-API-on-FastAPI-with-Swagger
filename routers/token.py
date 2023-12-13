@@ -16,7 +16,7 @@ router = APIRouter(prefix='/token', tags=['token'])
 async def create_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                        data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
                        token_service: Annotated[TokenService, Depends(dependencies.get_token_service)]):
-    user = await data_service.user.get(form_data.username, form_data.password)
+    user = await data_service.users.get_one(form_data.username, form_data.password)
 
     if not user:
         raise exceptions.HTTPUnauthorizedException()

@@ -13,4 +13,4 @@ router = APIRouter(prefix='/orders', tags=['orders'])
 @router.get('', response_model=List[schemas.Order])
 async def read_orders(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                       data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
-    return await data_service.orders.get(current_user)
+    return await data_service.orders.get_few(current_user)

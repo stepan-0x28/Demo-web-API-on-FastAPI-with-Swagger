@@ -11,7 +11,24 @@ from services.lock import Lock as LockService
 router = APIRouter(prefix='/user', tags=['user'])
 
 
-@router.get('', response_model=schemas.User)
+@router.post('')
+async def create_user(lock_service: Annotated[LockService, Depends(dependencies.get_lock_service)],
+                      new_user_details: Annotated[schemas.UserIn, Depends()],
+                      data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
+    async with await lock_service.get_lock(f'{models.User.__tablename__}_table'):
+        if await data_service.users.get_existence_status(new_user_details.username):
+            return schemas.Response(message='This username is already taken')
+
+        role = await data_service.roles.get_one('customer')
+
+        new_user = models.User(**new_user_details.model_dump(), role_id=role.id)
+
+        await data_service.users.create(new_user)
+
+    return schemas.Response(message='User created')
+
+
+@router.get('', response_model=schemas.UserOut)
 async def read_user(current_user: Annotated[models.User, Depends(dependencies.get_current_user)]):
     return current_user
 
@@ -27,7 +44,7 @@ async def update_password(current_password: Annotated[str, Form()],
     if current_user.password != current_password:
         return schemas.Response(message='Current password is incorrect')
 
-    await data_service.user.change_password(current_user, new_password)
+    await data_service.users.change_password(current_user, new_password)
 
     return schemas.Response(message='Password updated')
 
@@ -41,9 +58,9 @@ async def update_username(new_username: Annotated[str, Form()],
         return schemas.Response(message='The new username and the current one are the same')
 
     async with await lock_service.get_lock(f'{models.User.__tablename__}_table'):
-        if await data_service.user.get_existence_status(new_username):
+        if await data_service.users.get_existence_status(new_username):
             return schemas.Response(message='This username is already taken')
 
-        await data_service.user.change_username(current_user, new_username)
+        await data_service.users.change_username(current_user, new_username)
 
     return schemas.Response(message='Username updated')

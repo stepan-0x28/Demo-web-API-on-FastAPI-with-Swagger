@@ -27,7 +27,7 @@ async def get_current_user(token: Annotated[str, Depends(security.oauth2_scheme)
                            data_service: Annotated[DataService, Depends(get_data_service)]) -> models.User:
     subject = token_service.get_subject(token)
 
-    user = await data_service.user.get(subject['username'], subject['password'])
+    user = await data_service.users.get_one(subject['username'], subject['password'])
 
     if not user:
         raise exceptions.HTTPUnauthorizedException()
