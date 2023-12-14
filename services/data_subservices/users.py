@@ -16,7 +16,7 @@ class Users(Base):
         await self._async_session.commit()
 
     async def get_one(self, username: str, password: str) -> Optional[models.User]:
-        statement = select(models.User).join(models.Role).where(
+        statement = select(models.User).where(
             models.User.username == username).where(
             models.User.password == password
         ).options(joinedload(models.User.role))

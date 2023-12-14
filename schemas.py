@@ -29,11 +29,18 @@ class Role(BaseModel):
 
 class UserOut(BaseUser):
     id: int
-    role: Role
+    role_id: int
 
 
 class Response(BaseModel):
     message: str
+
+
+class Status(BaseModel):
+    id: int
+    key: str
+    name: str
+    description: str
 
 
 class Order(BaseModel):
@@ -42,3 +49,4 @@ class Order(BaseModel):
     executor_id: int
     name: str
     description: str
+    status_id: int

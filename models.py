@@ -22,11 +22,21 @@ class User(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String, nullable=False)
-    role_id: Mapped[int] = mapped_column(Integer, ForeignKey('roles.id'))
+    role_id: Mapped[int] = mapped_column(Integer, ForeignKey('roles.id'), nullable=False)
     first_name: Mapped[str] = mapped_column(String, nullable=False)
     last_name: Mapped[str] = mapped_column(String, nullable=False)
 
     role = relationship(Role)
+
+
+class Status(Base):
+    # noinspection SpellCheckingInspection
+    __tablename__ = 'statuses'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    key: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[str] = mapped_column(String, nullable=False)
 
 
 class Order(Base):
@@ -37,7 +47,9 @@ class Order(Base):
     customer_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
     executor_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
     name: Mapped[str] = mapped_column(String, nullable=False)
-    description: Mapped[str] = mapped_column(String)
+    description: Mapped[str] = mapped_column(String, nullable=False)
+    status_id: Mapped[int] = mapped_column(Integer, ForeignKey('statuses.id'), nullable=False)
 
     customer = relationship(User, foreign_keys=[customer_id])
     executor = relationship(User, foreign_keys=[executor_id])
+    status = relationship(Status)
