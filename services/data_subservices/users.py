@@ -2,7 +2,7 @@ import models
 import schemas
 
 from typing import Optional, Sequence
-from sqlalchemy import select, update, func
+from sqlalchemy import insert, select, update, func
 from sqlalchemy.orm import joinedload
 
 from services.data_subservices.base import Base
@@ -10,8 +10,10 @@ from enumerations import Roles
 
 
 class Users(Base):
-    async def create(self, new_user: models.User):
-        self._add(new_user)
+    async def create(self, new_user_details: schemas.UserIn):
+        statement = insert(models.User).values(new_user_details.model_dump())
+
+        await self._execute(statement)
 
         await self._commit()
 
@@ -24,7 +26,7 @@ class Users(Base):
         return await self._execute_and_get_one(statement)
 
     async def change_data(self, user_id: int, new_user_data: schemas.UserData):
-        statement = update(models.User).where(models.User.id == user_id).values(new_user_data)
+        statement = update(models.User).where(models.User.id == user_id).values(new_user_data.model_dump())
 
         await self._execute(statement)
 

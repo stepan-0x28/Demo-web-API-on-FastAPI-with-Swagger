@@ -22,9 +22,7 @@ async def create_user(lock_service: Annotated[LockService, Depends(dependencies.
         if await data_service.users.get_existence_status(new_user_details.username):
             return schemas.Response(message='This username is already taken')
 
-        new_user = models.User(**new_user_details.model_dump())
-
-        await data_service.users.create(new_user)
+        await data_service.users.create(new_user_details)
 
     return schemas.Response(message='User created')
 
