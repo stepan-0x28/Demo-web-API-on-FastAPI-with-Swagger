@@ -2,11 +2,11 @@ import uvicorn
 
 from fastapi import FastAPI
 
-from routers import token, user, orders
+from routers import roles, user, token, executors, orders
 
 app = FastAPI()
 
-for item in [token, user, orders]:
+for item in [roles, user, token, executors, orders]:
     app.include_router(item.router)
 
 if __name__ == '__main__':

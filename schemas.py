@@ -17,11 +17,19 @@ class BaseUser(UserData):
 
 class UserIn(BaseUser):
     password: str
+    role_id: int
+
+
+class Role(BaseModel):
+    id: int
+    key: str
+    name: str
+    description: str
 
 
 class UserOut(BaseUser):
     id: int
-    role_id: int
+    role: Role
 
 
 class Response(BaseModel):

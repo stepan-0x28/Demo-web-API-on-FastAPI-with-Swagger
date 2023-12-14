@@ -15,13 +15,14 @@ router = APIRouter(prefix='/user', tags=['user'])
 async def create_user(lock_service: Annotated[LockService, Depends(dependencies.get_lock_service)],
                       new_user_details: Annotated[schemas.UserIn, Depends()],
                       data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
+    if not await data_service.roles.get_existence_status(new_user_details.role_id):
+        return schemas.Response(message='No such role exists')
+
     async with await lock_service.get_lock(f'{models.User.__tablename__}_table'):
         if await data_service.users.get_existence_status(new_user_details.username):
             return schemas.Response(message='This username is already taken')
 
-        role = await data_service.roles.get_one('customer')
-
-        new_user = models.User(**new_user_details.model_dump(), role_id=role.id)
+        new_user = models.User(**new_user_details.model_dump())
 
         await data_service.users.create(new_user)
 

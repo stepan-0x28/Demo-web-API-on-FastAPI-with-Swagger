@@ -1,10 +1,12 @@
 import models
 import schemas
 
-from typing import Optional
+from typing import Optional, Sequence
 from sqlalchemy import select, update, func
+from sqlalchemy.orm import joinedload
 
 from services.data_subservices.base import Base
+from enumerations import Roles
 
 
 class Users(Base):
@@ -16,9 +18,8 @@ class Users(Base):
     async def get_one(self, username: str, password: str) -> Optional[models.User]:
         statement = select(models.User).join(models.Role).where(
             models.User.username == username).where(
-            models.User.password == password).where(
-            models.Role.key == 'customer'
-        )
+            models.User.password == password
+        ).options(joinedload(models.User.role))
 
         result = await self._async_session.execute(statement)
 
@@ -51,3 +52,10 @@ class Users(Base):
         await self._async_session.execute(statement)
 
         await self._async_session.commit()
+
+    async def get_executors(self) -> Sequence[models.User]:
+        statement = select(models.User).join(models.Role).where(models.Role.key == Roles.EXECUTOR)
+
+        result = await self._async_session.execute(statement)
+
+        return result.scalars().all()
