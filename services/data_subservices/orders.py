@@ -16,6 +16,4 @@ class Orders(Base):
 
         statement = select(models.Order).where(column == user.id)
 
-        result = await self._async_session.execute(statement)
-
-        return result.scalars().all()
+        return await self._execute_and_get_all(statement)

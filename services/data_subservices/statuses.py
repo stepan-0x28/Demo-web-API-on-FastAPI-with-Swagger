@@ -10,6 +10,4 @@ class Statuses(Base):
     async def get_few(self) -> Sequence[models.Role]:
         statement = select(models.Status)
 
-        result = await self._async_session.execute(statement)
-
-        return result.scalars().all()
+        return await self._execute_and_get_all(statement)
