@@ -1,4 +1,8 @@
 from pydantic import BaseModel
+from fastapi import Form
+from typing import Annotated
+
+from utilities import remove_keys
 
 
 class Token(BaseModel):
@@ -10,6 +14,10 @@ class UserData(BaseModel):
     first_name: str
     last_name: str
 
+    @classmethod
+    def as_form(cls, first_name: Annotated[str, Form()], last_name: Annotated[str, Form()]) -> BaseModel:
+        return cls(**remove_keys(locals(), 'cls'))
+
 
 class BaseUser(UserData):
     username: str
@@ -18,6 +26,13 @@ class BaseUser(UserData):
 class UserIn(BaseUser):
     password: str
     role_id: int
+
+    # noinspection PyMethodOverriding
+    @classmethod
+    def as_form(cls, first_name: Annotated[str, Form()], last_name: Annotated[str, Form()],
+                username: Annotated[str, Form()], password: Annotated[str, Form()],
+                role_id: Annotated[str, Form()]) -> BaseUser:
+        return cls(**remove_keys(locals(), 'cls'))
 
 
 class Role(BaseModel):
