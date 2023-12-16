@@ -22,16 +22,16 @@ class Orders(Base):
 
         await self._commit()
 
-    async def get_few(self, user: models.User) -> Sequence[models.Order]:
+    async def get_few(self, user: models.User, is_show_deleted: bool) -> Sequence[models.Order]:
         column = models.Order.customer_id
 
         if user.role.key == Roles.EXECUTOR:
             column = models.Order.executor_id
 
-        statement = select(models.Order).where(
-            column == user.id).where(
-            models.Order.is_deleted == false()
-        )
+        statement = select(models.Order).where(column == user.id)
+
+        if not is_show_deleted:
+            statement = statement.where(models.Order.is_deleted == false())
 
         return await self._execute_and_get_all(statement)
 

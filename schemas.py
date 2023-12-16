@@ -73,3 +73,4 @@ class OrderOut(OrderIn):
     id: int
     customer_id: int
     status_id: int
+    is_deleted: bool

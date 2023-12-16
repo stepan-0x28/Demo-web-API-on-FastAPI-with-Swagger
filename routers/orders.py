@@ -25,8 +25,9 @@ async def create_order(new_order_details: Annotated[schemas.OrderIn, Depends(sch
 
 @router.get('', response_model=List[schemas.OrderOut])
 async def read_orders(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
-                      data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
-    return await data_service.orders.get_few(current_user)
+                      data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
+                      is_show_deleted: bool = False):
+    return await data_service.orders.get_few(current_user, is_show_deleted)
 
 
 @router.put('/status')
