@@ -37,3 +37,12 @@ async def get_current_user(token: Annotated[str, Depends(security.oauth2_scheme)
 
 def get_lock_service() -> LockService:
     return _lock_service
+
+
+class RoleAccessChecker:
+    def __init__(self, *allowed_role_keys: str):
+        self.__allowed_role_keys = allowed_role_keys
+
+    def __call__(self, current_user: Annotated[models.User, Depends(get_current_user)]):
+        if current_user.role.key not in self.__allowed_role_keys:
+            raise exceptions.HTTPForbiddenException()

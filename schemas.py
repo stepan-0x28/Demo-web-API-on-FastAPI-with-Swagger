@@ -58,10 +58,18 @@ class Status(BaseModel):
     description: str
 
 
-class Order(BaseModel):
-    id: int
-    customer_id: int
+class OrderIn(BaseModel):
     executor_id: int
     name: str
     description: str
+
+    @classmethod
+    def as_form(cls, executor_id: Annotated[int, Form()], name: Annotated[str, Form()],
+                description: Annotated[str, Form()]) -> BaseModel:
+        return cls(**remove_keys(locals(), 'cls'))
+
+
+class OrderOut(OrderIn):
+    id: int
+    customer_id: int
     status_id: int

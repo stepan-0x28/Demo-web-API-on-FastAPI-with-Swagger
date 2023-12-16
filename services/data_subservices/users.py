@@ -44,6 +44,14 @@ class Users(Base):
 
         return bool(await self._execute_and_get_one(statement))
 
+    async def get_executor_existence_status(self, id_: int) -> bool:
+        statement = select(func.count()).select_from(models.User).join(models.Role).where(
+            models.User.id == id_).where(
+            models.Role.key == Roles.EXECUTOR
+        )
+
+        return bool(await self._execute_and_get_one(statement))
+
     async def change_username(self, user: models.User, new_username: str):
         statement = update(models.User).where(models.User.id == user.id).values({models.User.username: new_username})
 

@@ -1,13 +1,27 @@
 import models
+import schemas
 
+from sqlalchemy import select, insert
 from typing import Sequence
-from sqlalchemy import select
 
 from services.data_subservices.base import Base
-from enumerations import Roles
+from enumerations import Statuses, Roles
 
 
 class Orders(Base):
+    async def create(self, user: models.User, new_order_details: schemas.OrderIn):
+        status_id_subquery = select(models.Status.id).where(
+            models.Status.key == Statuses.NEW
+        ).scalar_subquery()
+
+        statement = insert(models.Order).values(customer_id=user.id,
+                                                **new_order_details.model_dump(),
+                                                status_id=status_id_subquery)
+
+        await self._execute(statement)
+
+        await self._commit()
+
     async def get_few(self, user: models.User) -> Sequence[models.Order]:
         column = models.Order.customer_id
 
