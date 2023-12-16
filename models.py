@@ -1,6 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Integer, String, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey, Boolean
 
 Base = declarative_base()
 
@@ -49,6 +49,7 @@ class Order(Base):
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str] = mapped_column(String, nullable=False)
     status_id: Mapped[int] = mapped_column(Integer, ForeignKey('statuses.id'), nullable=False)
+    is_deleted: Mapped[int] = mapped_column(Boolean, nullable=False, default=False)
 
     customer = relationship(User, foreign_keys=[customer_id])
     executor = relationship(User, foreign_keys=[executor_id])

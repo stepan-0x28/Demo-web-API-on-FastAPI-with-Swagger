@@ -43,3 +43,15 @@ async def update_status(current_user: Annotated[models.User, Depends(dependencie
     await data_service.orders.update_status(order_id, status_id)
 
     return schemas.Response(message='Status updated')
+
+
+@router.delete('')
+async def delete_order(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
+                       order_id: Annotated[int, Form()],
+                       data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
+    if not await data_service.orders.get_user_order_existence_status(current_user, order_id):
+        return schemas.Response(message='You do not have an order with this ID')
+
+    await data_service.orders.delete(order_id)
+
+    return schemas.Response(message='Order deleted')
