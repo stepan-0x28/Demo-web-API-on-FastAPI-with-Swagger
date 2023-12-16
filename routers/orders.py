@@ -12,9 +12,9 @@ router = APIRouter(prefix='/orders', tags=['orders'])
 
 
 @router.post('', dependencies=[Depends(dependencies.RoleAccessChecker(Roles.CUSTOMER))])
-async def create_orders(new_order_details: Annotated[schemas.OrderIn, Depends(schemas.OrderIn.as_form)],
-                        data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
-                        current_user: Annotated[models.User, Depends(dependencies.get_current_user)]):
+async def create_order(new_order_details: Annotated[schemas.OrderIn, Depends(schemas.OrderIn.as_form)],
+                       data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
+                       current_user: Annotated[models.User, Depends(dependencies.get_current_user)]):
     if not await data_service.users.get_executor_existence_status(new_order_details.executor_id):
         return schemas.Response(message='No such executor exists')
 
