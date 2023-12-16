@@ -32,7 +32,7 @@ class Orders(Base):
 
         return await self._execute_and_get_all(statement)
 
-    async def check_user_order_existence(self, user: models.User, order_id: int) -> bool:
+    async def get_user_order_existence_status(self, user: models.User, order_id: int) -> bool:
         column = models.Order.customer_id
 
         if user.role.key == Roles.EXECUTOR:

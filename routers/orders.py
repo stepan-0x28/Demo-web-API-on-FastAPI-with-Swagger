@@ -34,7 +34,7 @@ async def update_status(current_user: Annotated[models.User, Depends(dependencie
                         order_id: Annotated[int, Form()],
                         status_id: Annotated[int, Form()],
                         data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
-    if not await data_service.orders.check_user_order_existence(current_user, order_id):
+    if not await data_service.orders.get_user_order_existence_status(current_user, order_id):
         return schemas.Response(message='You do not have an order with this ID')
 
     if not await data_service.statuses.get_existence_status(status_id):

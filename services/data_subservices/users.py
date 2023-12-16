@@ -40,9 +40,7 @@ class Users(Base):
         await self._commit()
 
     async def get_existence_status(self, username: str) -> bool:
-        statement = select(func.count()).where(models.User.username == username)
-
-        return bool(await self._execute_and_get_one(statement))
+        return await self._get_existence_status(models.User.username == username)
 
     async def get_executor_existence_status(self, id_: int) -> bool:
         statement = select(func.count()).select_from(models.User).join(models.Role).where(
