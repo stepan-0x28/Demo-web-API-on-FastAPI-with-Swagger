@@ -1,7 +1,7 @@
 import models
 import schemas
 
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, func, update
 from typing import Sequence
 
 from services.data_subservices.base import Base
@@ -31,3 +31,23 @@ class Orders(Base):
         statement = select(models.Order).where(column == user.id)
 
         return await self._execute_and_get_all(statement)
+
+    async def check_user_order_existence(self, user: models.User, order_id: int) -> bool:
+        column = models.Order.customer_id
+
+        if user.role.key == Roles.EXECUTOR:
+            column = models.Order.executor_id
+
+        statement = select(func.count()).where(
+            models.Order.id == order_id).where(
+            column == user.id
+        )
+
+        return bool(await self._execute_and_get_one(statement))
+
+    async def update_status(self, order_id: int, status_id: int):
+        statement = update(models.Order).where(models.Order.id == order_id).values(status_id=status_id)
+
+        await self._execute(statement)
+
+        await self._commit()

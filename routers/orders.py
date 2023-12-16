@@ -2,7 +2,7 @@ import schemas
 import models
 import dependencies
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Form
 from typing import List, Annotated
 
 from enumerations import Roles
@@ -27,3 +27,19 @@ async def create_order(new_order_details: Annotated[schemas.OrderIn, Depends(sch
 async def read_orders(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                       data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
     return await data_service.orders.get_few(current_user)
+
+
+@router.put('/status')
+async def update_status(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
+                        order_id: Annotated[int, Form()],
+                        status_id: Annotated[int, Form()],
+                        data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
+    if not await data_service.orders.check_user_order_existence(current_user, order_id):
+        return schemas.Response(message='You do not have an order with this ID')
+
+    if not await data_service.statuses.get_existence_status(status_id):
+        return schemas.Response(message='No such status exists')
+
+    await data_service.orders.update_status(order_id, status_id)
+
+    return schemas.Response(message='Status updated')
