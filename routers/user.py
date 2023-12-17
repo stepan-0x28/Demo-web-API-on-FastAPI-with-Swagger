@@ -10,6 +10,8 @@ from services.lock import Lock as LockService
 
 router = APIRouter(prefix='/user', tags=['user'])
 
+_username_taken_response = schemas.Response(message='This username is already taken')
+
 
 @router.post('', response_model=schemas.Response)
 async def create_user(lock_service: Annotated[LockService, Depends(dependencies.get_lock_service)],
@@ -20,7 +22,7 @@ async def create_user(lock_service: Annotated[LockService, Depends(dependencies.
 
     async with await lock_service.get_lock(f'{models.User.__tablename__}_table'):
         if await data_service.users.get_existence_status(new_user_details.username):
-            return schemas.Response(message='This username is already taken')
+            return _username_taken_response
 
         await data_service.users.create(new_user_details)
 
@@ -67,7 +69,7 @@ async def update_username(new_username: Annotated[str, Form()],
 
     async with await lock_service.get_lock(f'{models.User.__tablename__}_table'):
         if await data_service.users.get_existence_status(new_username):
-            return schemas.Response(message='This username is already taken')
+            return _username_taken_response
 
         await data_service.users.change_username(current_user, new_username)
 

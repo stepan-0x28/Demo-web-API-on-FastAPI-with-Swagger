@@ -10,13 +10,16 @@ from services.data import Data as DataService
 
 router = APIRouter(prefix='/orders', tags=['orders'])
 
+_no_such_order_response = schemas.Response(message='You do not have an order with this ID')
+_no_such_executor_response = schemas.Response(message='No such executor exists')
+
 
 @router.post('', dependencies=[Depends(dependencies.RoleAccessChecker(Roles.CUSTOMER))])
 async def create_order(new_order_details: Annotated[schemas.OrderIn, Depends(schemas.OrderIn.as_form)],
                        data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
                        current_user: Annotated[models.User, Depends(dependencies.get_current_user)]):
     if not await data_service.users.get_executor_existence_status(new_order_details.executor_id):
-        return schemas.Response(message='No such executor exists')
+        return _no_such_executor_response
 
     await data_service.orders.create(current_user, new_order_details)
 
@@ -36,7 +39,7 @@ async def update_order(current_user: Annotated[models.User, Depends(dependencies
                        data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
                        new_order_data: Annotated[schemas.OrderData, Depends(schemas.OrderData.as_form)]):
     if not await data_service.orders.get_user_order_existence_status(current_user, order_id):
-        return schemas.Response(message='You do not have an order with this ID')
+        return _no_such_order_response
 
     await data_service.orders.change_data(order_id, new_order_data)
 
@@ -49,7 +52,7 @@ async def update_status(current_user: Annotated[models.User, Depends(dependencie
                         status_id: Annotated[int, Form()],
                         data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
     if not await data_service.orders.get_user_order_existence_status(current_user, order_id):
-        return schemas.Response(message='You do not have an order with this ID')
+        return _no_such_order_response
 
     if not await data_service.statuses.get_existence_status(status_id):
         return schemas.Response(message='No such status exists')
@@ -65,10 +68,10 @@ async def update_executor(current_user: Annotated[models.User, Depends(dependenc
                           data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
                           executor_id: Annotated[int, Form()]):
     if not await data_service.orders.get_user_order_existence_status(current_user, order_id):
-        return schemas.Response(message='You do not have an order with this ID')
+        return _no_such_order_response
 
     if not await data_service.users.get_executor_existence_status(executor_id):
-        return schemas.Response(message='No such executor exists')
+        return _no_such_executor_response
 
     await data_service.orders.update_executor(order_id, executor_id)
 
@@ -80,7 +83,7 @@ async def delete_order(current_user: Annotated[models.User, Depends(dependencies
                        order_id: Annotated[int, Form()],
                        data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
     if not await data_service.orders.get_user_order_existence_status(current_user, order_id):
-        return schemas.Response(message='You do not have an order with this ID')
+        return _no_such_order_response
 
     await data_service.orders.delete(order_id)
 
