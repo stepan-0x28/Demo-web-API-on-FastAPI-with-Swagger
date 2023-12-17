@@ -69,3 +69,10 @@ class Orders(Base):
         await self._execute(statement)
 
         await self._commit()
+
+    async def update_executor(self, order_id: int, executor_id: int):
+        statement = update(models.Order).where(models.Order.id == order_id).values(executor_id=executor_id)
+
+        await self._execute(statement)
+
+        await self._commit()

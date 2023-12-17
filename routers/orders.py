@@ -59,6 +59,22 @@ async def update_status(current_user: Annotated[models.User, Depends(dependencie
     return schemas.Response(message='Status updated')
 
 
+@router.put('/executor', dependencies=[Depends(dependencies.RoleAccessChecker(Roles.CUSTOMER))])
+async def update_executor(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
+                          order_id: Annotated[int, Form()],
+                          data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
+                          executor_id: Annotated[int, Form()]):
+    if not await data_service.orders.get_user_order_existence_status(current_user, order_id):
+        return schemas.Response(message='You do not have an order with this ID')
+
+    if not await data_service.users.get_executor_existence_status(executor_id):
+        return schemas.Response(message='No such executor exists')
+
+    await data_service.orders.update_executor(order_id, executor_id)
+
+    return schemas.Response(message='Executor updated')
+
+
 @router.delete('', dependencies=[Depends(dependencies.RoleAccessChecker(Roles.CUSTOMER))])
 async def delete_order(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                        order_id: Annotated[int, Form()],
