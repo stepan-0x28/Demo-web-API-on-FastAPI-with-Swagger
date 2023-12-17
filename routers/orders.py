@@ -30,6 +30,19 @@ async def read_orders(current_user: Annotated[models.User, Depends(dependencies.
     return await data_service.orders.get_few(current_user, is_show_deleted)
 
 
+@router.put('', dependencies=[Depends(dependencies.RoleAccessChecker(Roles.CUSTOMER))])
+async def update_order(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
+                       order_id: Annotated[int, Form()],
+                       data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
+                       new_order_data: Annotated[schemas.OrderData, Depends(schemas.OrderData.as_form)]):
+    if not await data_service.orders.get_user_order_existence_status(current_user, order_id):
+        return schemas.Response(message='You do not have an order with this ID')
+
+    await data_service.orders.change_data(order_id, new_order_data)
+
+    return schemas.Response(message='Data updated')
+
+
 @router.put('/status')
 async def update_status(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                         order_id: Annotated[int, Form()],
@@ -46,7 +59,7 @@ async def update_status(current_user: Annotated[models.User, Depends(dependencie
     return schemas.Response(message='Status updated')
 
 
-@router.delete('')
+@router.delete('', dependencies=[Depends(dependencies.RoleAccessChecker(Roles.CUSTOMER))])
 async def delete_order(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                        order_id: Annotated[int, Form()],
                        data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):

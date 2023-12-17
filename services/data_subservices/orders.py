@@ -62,3 +62,10 @@ class Orders(Base):
         await self._execute(statement)
 
         await self._commit()
+
+    async def change_data(self, order_id: int, new_order_data: schemas.OrderData):
+        statement = update(models.Order).where(models.Order.id == order_id).values(new_order_data.model_dump())
+
+        await self._execute(statement)
+
+        await self._commit()

@@ -35,16 +35,16 @@ class UserIn(BaseUser):
         return cls(**remove_keys(locals(), 'cls'))
 
 
+class UserOut(BaseUser):
+    id: int
+    role_id: int
+
+
 class Role(BaseModel):
     id: int
     key: str
     name: str
     description: str
-
-
-class UserOut(BaseUser):
-    id: int
-    role_id: int
 
 
 class Response(BaseModel):
@@ -58,11 +58,19 @@ class Status(BaseModel):
     description: str
 
 
-class OrderIn(BaseModel):
-    executor_id: int
+class OrderData(BaseModel):
     name: str
     description: str
 
+    @classmethod
+    def as_form(cls, name: Annotated[str, Form()], description: Annotated[str, Form()]) -> BaseModel:
+        return cls(**remove_keys(locals(), 'cls'))
+
+
+class OrderIn(OrderData):
+    executor_id: int
+
+    # noinspection PyMethodOverriding
     @classmethod
     def as_form(cls, executor_id: Annotated[int, Form()], name: Annotated[str, Form()],
                 description: Annotated[str, Form()]) -> BaseModel:
