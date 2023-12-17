@@ -38,7 +38,7 @@ async def read_user(current_user: Annotated[models.User, Depends(dependencies.ge
 async def update_user(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                       new_user_data: Annotated[schemas.UserData, Depends(schemas.UserData.as_form)],
                       data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
-    await data_service.users.change_data(current_user.id, new_user_data)
+    await data_service.users.change_data(current_user, new_user_data)
 
     return schemas.Response(message='Data updated')
 

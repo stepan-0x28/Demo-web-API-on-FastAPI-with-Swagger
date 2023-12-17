@@ -25,8 +25,8 @@ class Users(Base):
 
         return await self._execute_and_get_one(statement)
 
-    async def change_data(self, user_id: int, new_user_data: schemas.UserData):
-        statement = update(models.User).where(models.User.id == user_id).values(new_user_data.model_dump())
+    async def change_data(self, user: models.User, new_user_data: schemas.UserData):
+        statement = update(models.User).where(models.User.id == user.id).values(new_user_data.model_dump())
 
         await self._execute(statement)
 
