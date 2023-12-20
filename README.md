@@ -11,11 +11,15 @@
 
 #### Creating a network:
 
-`docker network create demo-web-api-network`
+```
+docker network create demo-web-api-network
+```
 
 #### Launching the DBMS:
 
-`docker pull postgres`
+```
+docker pull postgres
+```
 
 ```
 docker run -d \
@@ -33,7 +37,9 @@ postgres
 
 #### Launching the web API:
 
-`docker build -t demowebapi .`
+```
+docker build -t demowebapi .
+```
 
 ```
 docker run -d \
@@ -50,7 +56,9 @@ demowebapi
 
 #### Launching the web server:
 
-`docker pull nginx`
+```
+docker pull nginx
+```
 
 ```
 docker run -d \
