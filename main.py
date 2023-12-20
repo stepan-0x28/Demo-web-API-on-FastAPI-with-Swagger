@@ -6,7 +6,8 @@ from os import environ
 
 from routers import roles, user, token, executors, statuses, orders
 
-app = FastAPI()
+app = FastAPI(title='Demo web API on FastAPI with Swagger',
+              summary='This web API is something like a web API for an order management service')
 
 for item in [roles, user, token, executors, statuses, orders]:
     for route in item.router.routes:
