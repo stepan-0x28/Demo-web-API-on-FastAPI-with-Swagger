@@ -70,3 +70,18 @@ docker run -d \
 -v /etc/letsencrypt/live/stepan-0x28.com/privkey.pem:/etc/letsencrypt/live/stepan-0x28.com/privkey.pem:ro \
 nginx
 ```
+
+### Demonstration
+
+You can go to the [documentation page](https://stepan-0x28.com/Demo-web-API-on-FastAPI-with-Swagger/docs) to test the
+methods
+
+Test users for authorization:
+
+| Username   | Password       | Role     |
+|------------|----------------|----------|
+| thomas9213 | thomas9213pass | Customer |
+| josh8882   | josh8882pass   | Customer |
+| kevin645   | kevin645pass   | Executor |
+| james4214  | james4214pass  | Executor |
+| fred4444   | fred4444pass   | Customer |
