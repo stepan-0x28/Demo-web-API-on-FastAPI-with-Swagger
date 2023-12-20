@@ -23,6 +23,7 @@ docker pull postgres
 
 ```
 docker run -d \
+--restart=always \
 -p 5432:5432 \
 --name demo-web-api-dbms \
 --network demo-web-api-network \
@@ -43,6 +44,7 @@ docker build -t demowebapi .
 
 ```
 docker run -d \
+--restart=always \
 --name demo-web-api \
 --network demo-web-api-network \
 -e DATABASE_HOST=demo-web-api-dbms \
@@ -62,6 +64,7 @@ docker pull nginx
 
 ```
 docker run -d \
+--restart=always \
 -p 443:443 \
 --name demo-web-api-web-server \
 --network demo-web-api-network \
