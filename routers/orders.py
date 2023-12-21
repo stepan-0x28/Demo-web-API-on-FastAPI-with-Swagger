@@ -10,11 +10,13 @@ from services.data import Data as DataService
 
 router = APIRouter(prefix='/orders', tags=['orders'])
 
+_customer_role_access_checker = dependencies.RoleAccessChecker(Roles.CUSTOMER)
+
 _no_such_order_response = schemas.Response(message='You do not have an order with this ID')
 _no_such_executor_response = schemas.Response(message='No such executor exists')
 
 
-@router.post('', dependencies=[Depends(dependencies.RoleAccessChecker(Roles.CUSTOMER))])
+@router.post('', response_model=schemas.Response, dependencies=[Depends(_customer_role_access_checker)])
 async def create_order(new_order_details: Annotated[schemas.OrderIn, Depends(schemas.OrderIn.as_form)],
                        data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
                        current_user: Annotated[models.User, Depends(dependencies.get_current_user)]):
@@ -33,7 +35,7 @@ async def read_orders(current_user: Annotated[models.User, Depends(dependencies.
     return await data_service.orders.get_few(current_user, is_show_deleted)
 
 
-@router.put('', dependencies=[Depends(dependencies.RoleAccessChecker(Roles.CUSTOMER))])
+@router.put('', response_model=schemas.Response, dependencies=[Depends(_customer_role_access_checker)])
 async def update_order(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                        order_id: Annotated[int, Form()],
                        data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
@@ -46,7 +48,7 @@ async def update_order(current_user: Annotated[models.User, Depends(dependencies
     return schemas.Response(message='Data updated')
 
 
-@router.put('/status')
+@router.put('/status', response_model=schemas.Response)
 async def update_status(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                         order_id: Annotated[int, Form()],
                         status_id: Annotated[int, Form()],
@@ -62,7 +64,7 @@ async def update_status(current_user: Annotated[models.User, Depends(dependencie
     return schemas.Response(message='Status updated')
 
 
-@router.put('/executor', dependencies=[Depends(dependencies.RoleAccessChecker(Roles.CUSTOMER))])
+@router.put('/executor', response_model=schemas.Response, dependencies=[Depends(_customer_role_access_checker)])
 async def update_executor(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                           order_id: Annotated[int, Form()],
                           data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
@@ -78,7 +80,7 @@ async def update_executor(current_user: Annotated[models.User, Depends(dependenc
     return schemas.Response(message='Executor updated')
 
 
-@router.delete('', dependencies=[Depends(dependencies.RoleAccessChecker(Roles.CUSTOMER))])
+@router.delete('', response_model=schemas.Response, dependencies=[Depends(_customer_role_access_checker)])
 async def delete_order(current_user: Annotated[models.User, Depends(dependencies.get_current_user)],
                        order_id: Annotated[int, Form()],
                        data_service: Annotated[DataService, Depends(dependencies.get_data_service)]):
