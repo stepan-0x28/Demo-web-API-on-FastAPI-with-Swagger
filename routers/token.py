@@ -12,7 +12,7 @@ from services.token import Token as TokenService
 router = APIRouter(prefix='/token', tags=['token'])
 
 
-@router.post('', response_model=schemas.Token)
+@router.post('', response_model=schemas.Token, include_in_schema=False)
 async def create_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                        data_service: Annotated[DataService, Depends(dependencies.get_data_service)],
                        token_service: Annotated[TokenService, Depends(dependencies.get_token_service)]):
