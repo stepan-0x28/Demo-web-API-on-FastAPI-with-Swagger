@@ -59,7 +59,7 @@ VALUES ('kevin645', 'kevin645pass', 2, 'Kevin', 'Morgan'),
        ('thomas9213', 'thomas9213pass', 1, 'Thomas', 'Sparks'),
        ('josh8882', 'josh8882pass', 1, 'Josh', 'Torres');
 
-INSERT INTO orders(customer_id, executor_id, name, description, status_id, is_deleted)
-VALUES (3, 1, 'Website', 'Create a website using the Django framework for an insurance company', 1, false),
-       (3, 2, 'Mobile app', 'Create a mobile application for Android for a pizzeria', 1, false),
-       (4, 2, 'Service', 'Data processing service for a meteorological company', 2, false);
+INSERT INTO orders(customer_id, executor_id, name, description, status_id)
+VALUES (3, 1, 'Website', 'Create a website using the Django framework for an insurance company', 1),
+       (3, 2, 'Mobile app', 'Create a mobile application for Android for a pizzeria', 1),
+       (4, 2, 'Service', 'Data processing service for a meteorological company', 2);
