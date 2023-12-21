@@ -22,7 +22,8 @@ class Orders(Base):
 
         await self._commit()
 
-    async def get_few(self, user: models.User, is_show_deleted: bool) -> Sequence[models.Order]:
+    # The ability to display deleted orders is largely for demonstration purposes
+    async def get_few(self, user: models.User, is_show_deleted: bool = False) -> Sequence[models.Order]:
         column = models.Order.customer_id
 
         if user.role.key == Roles.EXECUTOR:

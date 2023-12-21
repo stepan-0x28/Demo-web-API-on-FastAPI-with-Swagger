@@ -43,23 +43,23 @@ CREATE TABLE orders (
 );
 
 
-INSERT INTO roles (id, key, name, description)
-VALUES (1, 'customer', 'Customer', 'Creates orders'),
-       (2, 'executor', 'Executor', 'Fulfills orders');
+INSERT INTO roles (key, name, description)
+VALUES ('customer', 'Customer', 'Creates orders'),
+       ('executor', 'Executor', 'Fulfills orders');
 
-INSERT INTO statuses (id, key, name, description)
-VALUES (1, 'new', 'New', 'The customer created an order'),
-       (2, 'in_progress', 'In progress', 'The customer began work on the order'),
-       (3, 'completed', 'Completed', 'The customer has completed work on the order');
+INSERT INTO statuses (key, name, description)
+VALUES ('new', 'New', 'The customer created an order'),
+       ('in_progress', 'In progress', 'The customer began work on the order'),
+       ('completed', 'Completed', 'The customer has completed work on the order');
 
-INSERT INTO users (id, username, password, role_id, first_name, last_name)
-VALUES (5, 'thomas9213', 'thomas9213pass', 1, 'Thomas', 'Sparks'),
-       (6, 'josh8882', 'josh8882pass', 1, 'Josh', 'Torres'),
-       (1, 'kevin645', 'kevin645pass', 2, 'Kevin', 'Morgan'),
-       (3, 'james4214', 'james4214pass', 2, 'James', 'Anderson'),
-       (4, 'fred4444', 'fred4444pass', 1, 'Fred', 'Russell');
+INSERT INTO users (username, password, role_id, first_name, last_name)
+VALUES ('kevin645', 'kevin645pass', 2, 'Kevin', 'Morgan'),
+       ('james4214', 'james4214pass', 2, 'James', 'Anderson'),
+       ('fred4444', 'fred4444pass', 1, 'Fred', 'Russell'),
+       ('thomas9213', 'thomas9213pass', 1, 'Thomas', 'Sparks'),
+       ('josh8882', 'josh8882pass', 1, 'Josh', 'Torres');
 
-INSERT INTO orders(id, customer_id, executor_id, name, description, status_id, is_deleted)
-VALUES (3, 5, 3, 'Service', 'Data processing service for a meteorological company', 2, false),
-       (2, 4, 3, 'Mobile app', 'Create a mobile application for Android for a pizzeria', 1, false),
-       (1, 4, 1, 'Website', 'Create a website using the Django framework for an insurance company', 1, false);
+INSERT INTO orders(customer_id, executor_id, name, description, status_id, is_deleted)
+VALUES (3, 1, 'Website', 'Create a website using the Django framework for an insurance company', 1, false),
+       (3, 2, 'Mobile app', 'Create a mobile application for Android for a pizzeria', 1, false),
+       (4, 2, 'Service', 'Data processing service for a meteorological company', 2, false);
