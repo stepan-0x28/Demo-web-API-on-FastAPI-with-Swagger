@@ -76,7 +76,7 @@ nginx
 
 ### Demonstration
 
-You can go to the [documentation page](https://demo-web-api-on-fastapi-with-swagger.stepan-0x28.com/docs) to test the
+You can go to the <a href="https://demo-web-api-on-fastapi-with-swagger.stepan-0x28.com/docs" target="_blank">documentation page</a> to test the
 methods
 
 Test users for authorization:
