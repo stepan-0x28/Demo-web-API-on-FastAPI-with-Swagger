@@ -76,7 +76,7 @@ nginx
 
 ### Demonstration
 
-You can go to the [documentation page](https://stepan-0x28.com/Demo-web-API-on-FastAPI-with-Swagger/docs) to test the
+You can go to the [documentation page](https://demo-web-api-on-fastapi-with-swagger.stepan-0x28.com/docs) to test the
 methods
 
 Test users for authorization:
